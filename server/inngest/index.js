@@ -17,6 +17,7 @@ const syncUserCreation = inngest.createFunction({ id: "sync-user-from-clerk" }, 
     });
 });
 
+
 // Inngest Function to delete user from database
 const syncUserDeletion = inngest.createFunction({ id: "delete-user-with-clerk" }, { event: "clerk/user.deleted" }, async ({ event }) => {
     const { data } = event;
@@ -39,6 +40,29 @@ const syncUserUpdation = inngest.createFunction({ id: "update-user-from-clerk" }
             email: data?.email_addresses[0]?.email_address,
             name: data?.first_name + " " + data?.last_name,
             image: data?.image_url,
+        },
+    });
+});
+
+// Inngest Function to save workspace data to a database
+const syncWorkspaceCreation = inngest.createFunction({ id: "sync-workspace-from-clerk" }, { event: "clerk/organization.created" }, async ({ event }) => {
+    const { data } = event;
+    await prisma.workspace.create({
+        data: {
+            id: data.id,
+            name: data.name,
+            slug: data.slug,
+            ownerId: data.created_by,
+            image_url: data.image_url,
+        },
+    });
+
+    // Add creator as ADMIN member
+    await prisma.workspaceMember.create({
+        data: {
+            userId: data.created_by,
+            workspaceId: data.id,
+            role: "ADMIN",
         },
     });
 });
