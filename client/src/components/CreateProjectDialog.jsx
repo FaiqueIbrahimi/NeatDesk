@@ -2,6 +2,7 @@ import { useState } from "react";
 import { XIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import api from "../configs/api";
 
 const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
