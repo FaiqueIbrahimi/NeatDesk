@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { XIcon } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import api from "../configs/api";
+import { useAuth } from "@clerk/clerk-react";
+
 
 const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
+
+     const { getToken } = useAuth();
+     const dispatch = useDispatch();
 
     const { currentWorkspace } = useSelector((state) => state.workspace);
 
